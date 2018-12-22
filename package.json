@@ -2,13 +2,18 @@
 	"name": "demon",
 	"displayName": "demon",
 	"description": "FE-Map-Enum vscode's Extension.",
-	"version": "1.0.3",
+	"version": "1.1.1",
+	"publisher": "Wiolem",
 	"engines": {
 		"vscode": "^1.30.0"
 	},
 	"categories": [
 		"Other"
 	],
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/Wiolem/demon.git"
+	},
 	"activationEvents": [
 		"onCommand:extension.mapEnum"
 	],
