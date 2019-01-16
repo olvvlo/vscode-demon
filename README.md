@@ -9,6 +9,7 @@ WAITING(10, "待处理"),
 PREPROCCESSED(20, "预处理完成"),
 ORDER_CREATED(30, "单据已创建"),
 FINISHED(40, "已完成"),
+
 ```
 
 > cmd + shift + p
@@ -16,15 +17,27 @@ FINISHED(40, "已完成"),
 
 ```
 {
-  FINISHED: 40,
-  ORDER_CREATED: 30,
+  WAITING: 10,
   PREPROCCESSED: 20,
-  WAITING: 10
+  CREATED: 30,
+  FINISHED: 40,
   properties: {
-    10: { name: "待处理", value: 10 },
-    20: { name: "预处理完成", value: 20 },
-    30: { name: "单据已创建", value: 30 },
-    40: { name: "已完成", value: 40 }
+    10: {
+      value: 10,
+      name: "待处理"
+    },
+    20: {
+      value: 20,
+      name: "预处理完成"
+    },
+    30: {
+      value: 30,
+      name: "单据已创建"
+    },
+    40: {
+      value: 40,
+      name: "已完成"
+    }
   }
 }
 ```
@@ -45,17 +58,9 @@ Users appreciate release notes as you update your extension.
 
 [feat]: Initial release.
 
-### 1.0.1
+### 1.1.0
 
-[doc]: add desc.
-
-### 1.0.2
-
-[test]: add test.
-
-### 1.1.3
-
-[feat]: fix bugs.
+[feat]: Support multiple type key.
 
 -----------------------------------------------------------------------------------------------------------
 
