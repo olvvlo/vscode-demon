@@ -16,30 +16,33 @@ export function activate(context: vscode.ExtensionContext) {
         showInformationMessage('Map success!');
       });
     } catch (error) {
-      console.log(error)
+      console.log(error);
       showInformationMessage('Map error!');
     }
 
   }));
 }
 
-export function formatEnumMapFromDev (t: string, fn = (str: string) => (str.split(/\(|,/).filter(Boolean))) {
-  const TML = t.replace(/\"/g, '').split(/\),/).filter(Boolean).map((v) => (v.trim())).reduce((acc: any, curr: any) => {
-    const properties = { ...acc.properties };
-    delete acc.properties;
-    return {
-      ...acc,
-      [fn(curr)[0]]: +fn(curr)[1],
-      properties: {
-        ...properties,
-        [fn(curr)[1]]: {
-          ...fn(curr).slice(2).reduce((acc, curr, idx) => ({...acc, [`name${idx ? idx : ''}`]: curr.trim()}), {}),
-          value: +fn(curr)[1]
-        }
-      }
-    };
-  }, {});
-  return `\n${JSON.stringify(TML, null, 2).replace(/"(\w+)":|"-(\w+)":/g, (item) => {
+export function formatEnumMapFromDev(t: string) {
+  let result: any = {};
+  let properties: any = {};
+  let template = t.match(/[A-Z]+(\(.+\))+/g) || [];
+  template.forEach((item) => {
+    const array = item.match(/[A-Z]+|\(.+\)/g) || [];
+    const vArr = array[1].replace(/\(|\)/g, '').split(',').map((v) => (v.trim().replace(/'|"/g, '')));
+    const temp = vArr.find((v) => (+v === 0 || !!(+v)));
+    const kv = temp ? +temp : vArr[0];
+    const others = vArr.filter((v) => (v !== (temp || vArr[0])));
+    result[array[0]] = kv;
+    properties[kv] = {
+      value: kv,
+      ...others.reduce((acc, curr, idx) => ({
+        ...acc, [`name${idx ? idx : ''}`]: curr
+      }), {})
+    }
+  });
+  result.properties = properties;
+  return `\n${JSON.stringify(result, null, 2).replace(/"(\w+)":|"-(\w+)":/g, (item) => {
     if (item.match(/"-(\w+)":/)) {
       return `[${item.replace(/"|:/g, '')}]:`;
     }

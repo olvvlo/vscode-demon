@@ -20,13 +20,21 @@ function activate(context) {
     }));
 }
 exports.activate = activate;
-function formatEnumMapFromDev(t, fn = (str) => (str.split(/\(|,/).filter(Boolean))) {
-    const TML = t.replace(/\"/g, '').split(/\),/).filter(Boolean).map((v) => (v.trim())).reduce((acc, curr) => {
-        const properties = Object.assign({}, acc.properties);
-        delete acc.properties;
-        return Object.assign({}, acc, { [fn(curr)[0]]: +fn(curr)[1], properties: Object.assign({}, properties, { [fn(curr)[1]]: Object.assign({}, fn(curr).slice(2).reduce((acc, curr, idx) => (Object.assign({}, acc, { [`name${idx ? idx : ''}`]: curr.trim() })), {}), { value: +fn(curr)[1] }) }) });
-    }, {});
-    return `\n${JSON.stringify(TML, null, 2).replace(/"(\w+)":|"-(\w+)":/g, (item) => {
+function formatEnumMapFromDev(t) {
+    let result = {};
+    let properties = {};
+    let template = t.match(/[A-Z]+(\(.+\))+/g) || [];
+    template.forEach((item) => {
+        const array = item.match(/[A-Z]+|\(.+\)/g) || [];
+        const vArr = array[1].replace(/\(|\)/g, '').split(',').map((v) => (v.trim().replace(/'|"/g, '')));
+        const temp = vArr.find((v) => (+v === 0 || !!(+v)));
+        const kv = temp ? +temp : vArr[0];
+        const others = vArr.filter((v) => (v !== (temp || vArr[0])));
+        result[array[0]] = kv;
+        properties[kv] = Object.assign({ value: kv }, others.reduce((acc, curr, idx) => (Object.assign({}, acc, { [`name${idx ? idx : ''}`]: curr })), {}));
+    });
+    result.properties = properties;
+    return `\n${JSON.stringify(result, null, 2).replace(/"(\w+)":|"-(\w+)":/g, (item) => {
         if (item.match(/"-(\w+)":/)) {
             return `[${item.replace(/"|:/g, '')}]:`;
         }

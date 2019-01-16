@@ -53,7 +53,7 @@ Users appreciate release notes as you update your extension.
 
 [test]: add test.
 
-### 1.0.3
+### 1.1.3
 
 [feat]: fix bugs.
 
