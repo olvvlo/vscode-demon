@@ -42,17 +42,29 @@ FINISHED(40, "已完成"),
 }
 ```
 
-## Requirements
-
-install vscode.
-
 ## Extension Settings
 
-nothing.
+```
+"commands": [
+  {
+    "command": "extension.mapEnum",
+    "title": "MapEnum"
+  }
+],
+"configuration": {
+  "type": "object",
+  "title": "demon configuration",
+  "properties": {
+    "demon.keyNum": {
+      "type": "number",
+      "default": 0,
+      "description": "Set default key number."
+    }
+  }
+}
+```
 
 ## Release Notes
-
-Users appreciate release notes as you update your extension.
 
 ### 1.0.0
 
@@ -61,6 +73,10 @@ Users appreciate release notes as you update your extension.
 ### 1.1.0
 
 [feat]: Support multiple type key.
+
+### 1.2.0
+
+[feat]: Support set diff key number.
 
 -----------------------------------------------------------------------------------------------------------
 

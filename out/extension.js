@@ -9,7 +9,8 @@ function activate(context) {
                 const selection = activeTextEditor.selection;
                 const position = new Position(selection.active.line, selection.active.character);
                 const text = activeTextEditor.document.getText(selection);
-                editBuilder.insert(position, formatEnumMapFromDev(text));
+                const config = vscode.workspace.getConfiguration('demon');
+                editBuilder.insert(position, formatEnumMapFromDev(text, config.keyNum));
                 showInformationMessage('Map success!');
             });
         }
@@ -20,22 +21,26 @@ function activate(context) {
     }));
 }
 exports.activate = activate;
-function formatEnumMapFromDev(t) {
+function isNumber(num) {
+    return typeof +num === 'number' && !Number.isNaN(+num) ? +num : num;
+}
+exports.isNumber = isNumber;
+function formatEnumMapFromDev(t, keyNum) {
     let result = {};
     let properties = {};
-    let template = t.match(/[A-Z]+(\(.+\))+/g) || [];
+    let template = t.match(/[A-Z_\d]+(\(.+\))+/g) || [];
     template.forEach((item) => {
-        const array = item.match(/[A-Z]+|\(.+\)/g) || [];
+        const array = item.match(/[A-Z_\d]+|\(.+\)/g) || [];
         const vArr = array[1].replace(/\(|\)/g, '').split(',').map((v) => (v.trim().replace(/'|"/g, '')));
-        const temp = vArr.find((v) => (+v === 0 || !!(+v)));
-        const kv = temp ? +temp : vArr[0];
-        const others = vArr.filter((v) => (v !== (temp || vArr[0])));
+        const temp = vArr[keyNum];
+        const kv = isNumber(temp);
+        const others = vArr.filter((v) => (v !== temp));
         result[array[0]] = kv;
-        properties[kv] = Object.assign({ value: kv }, others.reduce((acc, curr, idx) => (Object.assign({}, acc, { [`name${idx ? idx : ''}`]: curr })), {}));
+        properties[kv] = Object.assign({ value: kv }, others.reduce((acc, curr, idx) => (Object.assign({}, acc, { [`name${idx ? idx : ''}`]: isNumber(curr) })), {}));
     });
     result.properties = properties;
-    return `\n${JSON.stringify(result, null, 2).replace(/"(\w+)":|"-(\w+)":/g, (item) => {
-        if (item.match(/"-(\w+)":/)) {
+    return `\n${JSON.stringify(result, null, 2).replace(/"(.+)":|"-(.+)":/g, (item) => {
+        if (item.match(/"-(.+)":/)) {
             return `[${item.replace(/"|:/g, '')}]:`;
         }
         return item.replace(/"/g, '');

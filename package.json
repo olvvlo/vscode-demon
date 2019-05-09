@@ -2,7 +2,7 @@
 	"name": "demon",
 	"displayName": "demon",
 	"description": "FE-Map-Enum vscode's Extension.",
-	"version": "1.1.4",
+	"version": "1.2.1",
 	"publisher": "Wiolem",
 	"icon": "static/icon.png",
 	"engines": {
@@ -26,7 +26,18 @@
 				"command": "extension.mapEnum",
 				"title": "MapEnum"
 			}
-		]
+		],
+		"configuration": {
+			"type": "object",
+			"title": "demon configuration",
+			"properties": {
+				"demon.keyNum": {
+					"type": "number",
+					"default": 0,
+					"description": "Set default key number."
+				}
+			}
+		}
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",
