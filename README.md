@@ -66,14 +66,6 @@ FINISHED(40, "已完成"),
 
 ## Release Notes
 
-### 1.0.0
-
-[feat]: Initial release.
-
-### 1.1.0
-
-[feat]: Support multiple type key.
-
 ### 1.2.0
 
 [feat]: Support set diff key number.
